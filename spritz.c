@@ -59,26 +59,30 @@ initialize_state(State *state)
     }
 }
 
-static void
+void
 update(State *state)
 {
     unsigned char t;
+    unsigned char y;
 
     state->i += state->w;
-    state->j = state->k + state->s[(state->j + state->s[state->i]) % N];
+    y = state->j + state->s[state->i];
+    state->j = state->k + state->s[y];
     state->k = state->i + state->k + state->s[state->j];
     t = state->s[state->i];
     state->s[state->i] = state->s[state->j];
     state->s[state->j] = t;
 }
 
-static unsigned char
+unsigned char
 output(State *state)
 {
-    state->z =
-        state->s[(state->j +
-                  state->s[(state->i +
-                            state->s[(state->z + state->k) % N]) % N]) % N];
+    const unsigned char y1 = state->z + state->k;
+    const unsigned char x1 = state->i + state->s[y1];
+    const unsigned char y2 = state->j + state->s[x1];
+
+    state->z = state->s[y2];
+
     return state->z;
 }
 
@@ -87,12 +91,14 @@ crush(State *state)
 {
     unsigned int  v;
     unsigned char t;
+    unsigned char y;
 
     for (v = 0; v < N / 2; v++) {
-        if (state->s[v] > state->s[N - 1 - v]) {
+        y = N - 1 - v;
+        if (state->s[v] > state->s[y]) {
             t = state->s[v];
-            state->s[v] = state->s[N - 1 - v];
-            state->s[N - 1 - v] = t;
+            state->s[v] = state->s[y];
+            state->s[y] = t;
         }
     }
 }
@@ -133,13 +139,15 @@ static void
 absorb_nibble(State *state, const unsigned char x)
 {
     unsigned char t;
+    unsigned char y;
 
     if (state->a == N / 2) {
         shuffle(state);
     }
+    y = N / 2 + x;
     t = state->s[state->a];
-    state->s[state->a] = state->s[(N / 2 + x) % N];
-    state->s[(N / 2 + x) % N] = t;
+    state->s[state->a] = state->s[y];
+    state->s[y] = t;
     state->a++;
 }
 
