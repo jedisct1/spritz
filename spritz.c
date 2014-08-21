@@ -191,6 +191,16 @@ squeeze(State *state, unsigned char *out, size_t outlen)
     }
 }
 
+static void
+key_setup(State *state, const unsigned char *key, size_t keylen)
+{
+    initialize_state(state);
+    absorb(state, key, keylen);
+    if (state->a > 0) {
+        shuffle(state);
+    }
+}
+
 int
 spritz_hash(unsigned char *out, size_t outlen,
             const unsigned char *msg, size_t msglen)
@@ -224,16 +234,6 @@ spritz_stream(unsigned char *out, size_t outlen,
     memzero(&state, sizeof state);
 
     return 0;
-}
-
-static void
-key_setup(State *state, const unsigned char *key, size_t keylen)
-{
-    initialize_state(state);
-    absorb(state, key, keylen);
-    if (state->a > 0) {
-        shuffle(state);
-    }
 }
 
 int
