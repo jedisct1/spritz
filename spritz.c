@@ -227,6 +227,16 @@ spritz_stream(unsigned char *out, size_t outlen,
     return 0;
 }
 
+static void
+key_setup(State *state, const unsigned char *key, size_t keylen)
+{
+    initialize_state(state);
+    absorb(state, key, keylen);
+    if (state->a > 0) {
+        shuffle(state);
+    }
+}
+
 int
 spritz_encrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
                const unsigned char *key, size_t keylen)
@@ -234,11 +244,7 @@ spritz_encrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
     State  state;
     size_t v;
 
-    initialize_state(&state);
-    absorb(&state, key, keylen);
-    if (state.a > 0) {
-        shuffle(&state);
-    }
+    key_setup(&state, key, keylen);
     for (v = 0; v < msglen; v++) {
         out[v] = msg[v] + drip(&state);
     }
@@ -254,11 +260,7 @@ spritz_decrypt(unsigned char *out, const unsigned char *c, size_t clen,
     State  state;
     size_t v;
 
-    initialize_state(&state);
-    absorb(&state, key, keylen);
-    if (state.a > 0) {
-        shuffle(&state);
-    }
+    key_setup(&state, key, keylen);
     for (v = 0; v < clen; v++) {
         out[v] = c[v] - drip(&state);
     }
