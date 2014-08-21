@@ -91,13 +91,19 @@ crush(State *state)
     unsigned char v;
     unsigned char t;
     unsigned char y;
+    unsigned char x1;
+    unsigned char x2;
 
     for (v = 0; v < N / 2; v++) {
         y = (N - 1) - v;
-        if (state->s[v] > state->s[y]) {
-            t = state->s[v];
-            state->s[v] = state->s[y];
-            state->s[y] = t;
+        x1 = state->s[v];
+        x2 = state->s[y];
+        if (x1 > x2) {
+            state->s[v] = x2;
+            state->s[y] = x1;
+        } else {
+            state->s[v] = x1;
+            state->s[y] = x2;
         }
     }
 }
