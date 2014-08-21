@@ -6,7 +6,15 @@
 
 #define N 256
 
-typedef struct State_ {
+#if defined(_MSC_VER)
+# define ALIGNED(S) __declspec(align(S))
+#elif defined(__GNUC__)
+# define ALIGNED(S) __attribute__((aligned(S)))
+#else
+# define ALIGNED(S)
+#endif
+
+ALIGNED(64) typedef struct State_ {
     unsigned char s[N];
     unsigned char i;
     unsigned char j;
@@ -183,6 +191,9 @@ spritz_hash(unsigned char *out, size_t outlen,
     State         state;
     unsigned char r;
 
+    if (outlen > 255) {
+        return -1;
+    }
     r = (unsigned char) outlen;
     initialize_state(&state);
     absorb(&state, msg, msglen);
