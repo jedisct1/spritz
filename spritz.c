@@ -47,16 +47,15 @@ initialize_state(State *state)
 {
     unsigned int v;
 
+    for (v = 0; v < N; v++) {
+        state->s[v] = (unsigned char) v;
+    }
     state->i = 0;
     state->j = 0;
     state->k = 0;
     state->z = 0;
     state->a = 0;
     state->w = 1;
-
-    for (v = 0; v < N; v++) {
-        state->s[v] = (unsigned char) v;
-    }
 }
 
 static void
