@@ -239,12 +239,15 @@ key_setup(State *state, const unsigned char *key, size_t keylen)
 
 int
 spritz_encrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
+               const unsigned char *nonce, size_t noncelen,
                const unsigned char *key, size_t keylen)
 {
     State  state;
     size_t v;
 
     key_setup(&state, key, keylen);
+    absorb_stop(&state);
+    absorb(&state, nonce, noncelen);
     for (v = 0; v < msglen; v++) {
         out[v] = msg[v] + drip(&state);
     }
@@ -255,12 +258,15 @@ spritz_encrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
 
 int
 spritz_decrypt(unsigned char *out, const unsigned char *c, size_t clen,
+               const unsigned char *nonce, size_t noncelen,
                const unsigned char *key, size_t keylen)
 {
     State  state;
     size_t v;
 
     key_setup(&state, key, keylen);
+    absorb_stop(&state);
+    absorb(&state, nonce, noncelen);
     for (v = 0; v < clen; v++) {
         out[v] = c[v] - drip(&state);
     }
