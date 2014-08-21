@@ -88,12 +88,12 @@ output(State *state)
 static void
 crush(State *state)
 {
-    unsigned int  v;
+    unsigned char v;
     unsigned char t;
     unsigned char y;
 
     for (v = 0; v < N / 2; v++) {
-        y = N - 1 - v;
+        y = (N - 1) - v;
         if (state->s[v] > state->s[y]) {
             t = state->s[v];
             state->s[v] = state->s[y];
@@ -217,7 +217,6 @@ spritz_stream(unsigned char *out, size_t outlen,
               const unsigned char *key, size_t keylen)
 {
     State  state;
-    size_t v;
 
     initialize_state(&state);
     absorb(&state, key, keylen);
