@@ -232,7 +232,7 @@ int
 spritz_stream(unsigned char *out, size_t outlen,
               const unsigned char *key, size_t keylen)
 {
-    State  state;
+    State state;
 
     initialize_state(&state);
     absorb(&state, key, keylen);
