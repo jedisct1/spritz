@@ -21,3 +21,9 @@ int spritz_auth(unsigned char *out, size_t outlen,
                 const unsigned char *msg, size_t msglen,
                 const unsigned char *key, size_t keylen);
 ```
+
+*WARNING* You probably shouldn't use the Spritz cipher for anything.
+
+It has distinguishers, performance is not impressive (using Spritz to
+build a hash function is even slower than Keccak), it depends on
+conditional jumps and there is no cryptanalysis.
