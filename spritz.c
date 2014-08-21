@@ -1,6 +1,8 @@
 
-#include <stdio.h>
+#include <stddef.h>
 #include <string.h>
+
+#include "spritz.h"
 
 #define N 256
 
@@ -175,8 +177,8 @@ squeeze(State *state, unsigned char *out, size_t outlen)
 }
 
 int
-hash(unsigned char *out, size_t outlen,
-     const unsigned char *msg, size_t msglen)
+spritz_hash(unsigned char *out, size_t outlen,
+            const unsigned char *msg, size_t msglen)
 {
     State         state;
     unsigned char r;
@@ -193,27 +195,23 @@ hash(unsigned char *out, size_t outlen,
 }
 
 int
-stream(unsigned char *out, size_t outlen, const unsigned char *key, size_t keylen)
+spritz_stream(unsigned char *out, size_t outlen,
+              const unsigned char *key, size_t keylen)
 {
     State  state;
     size_t v;
 
     initialize_state(&state);
     absorb(&state, key, keylen);
-    if (state.a > 0) {
-        shuffle(&state);
-    }
-    for (v = 0; v < outlen; v++) {
-        out[v] = drip(&state);
-    }
+    squeeze(&state, out, outlen);
     memzero(&state, sizeof state);
 
     return 0;
 }
 
 int
-encrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
-        const unsigned char *key, size_t keylen)
+spritz_encrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
+               const unsigned char *key, size_t keylen)
 {
     State  state;
     size_t v;
@@ -232,8 +230,8 @@ encrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
 }
 
 int
-decrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
-        const unsigned char *key, size_t keylen)
+spritz_decrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
+               const unsigned char *key, size_t keylen)
 {
     State  state;
     size_t v;
@@ -247,29 +245,6 @@ decrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
         out[v] = msg[v] - drip(&state);
     }
     memzero(&state, sizeof state);
-
-    return 0;
-}
-
-int
-main(void)
-{
-    unsigned char       out[32];
-    const unsigned char msg[] = { 'a', 'r', 'c', 'f', 'o', 'u', 'r' };
-    size_t              i;
-
-    hash(out, sizeof out, msg, 7);
-
-    for (i = 0; i < sizeof out; i++) {
-        printf("%02x ", out[i]);
-    }
-    putchar('\n');
-
-    stream(out, sizeof out, msg, 7);
-    for (i = 0; i < sizeof out; i++) {
-        printf("%02x ", out[i]);
-    }
-    putchar('\n');
 
     return 0;
 }
