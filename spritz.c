@@ -249,7 +249,7 @@ spritz_encrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
 }
 
 int
-spritz_decrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
+spritz_decrypt(unsigned char *out, const unsigned char *c, size_t clen,
                const unsigned char *key, size_t keylen)
 {
     State  state;
@@ -260,8 +260,8 @@ spritz_decrypt(unsigned char *out, const unsigned char *msg, size_t msglen,
     if (state.a > 0) {
         shuffle(&state);
     }
-    for (v = 0; v < msglen; v++) {
-        out[v] = msg[v] - drip(&state);
+    for (v = 0; v < clen; v++) {
+        out[v] = c[v] - drip(&state);
     }
     memzero(&state, sizeof state);
 
