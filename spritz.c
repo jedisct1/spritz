@@ -274,3 +274,26 @@ spritz_decrypt(unsigned char *out, const unsigned char *c, size_t clen,
 
     return 0;
 }
+
+int
+spritz_auth(unsigned char *out, size_t outlen,
+            const unsigned char *msg, size_t msglen,
+            const unsigned char *key, size_t keylen)
+{
+    State         state;
+    unsigned char r;
+
+    if (outlen > 255) {
+        return -1;
+    }
+    r = (unsigned char) outlen;
+    key_setup(&state, key, keylen);
+    absorb_stop(&state);
+    absorb(&state, msg, msglen);
+    absorb_stop(&state);
+    absorb(&state, &r, 1U);
+    squeeze(&state, out, outlen);
+    memzero(&state, sizeof state);
+
+    return 0;
+}
