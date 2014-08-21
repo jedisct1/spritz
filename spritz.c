@@ -59,7 +59,7 @@ initialize_state(State *state)
     }
 }
 
-void
+static void
 update(State *state)
 {
     unsigned char t;
@@ -74,7 +74,7 @@ update(State *state)
     state->s[state->j] = t;
 }
 
-unsigned char
+static unsigned char
 output(State *state)
 {
     const unsigned char y1 = state->z + state->k;
