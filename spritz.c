@@ -16,12 +16,12 @@
 
 ALIGNED(64) typedef struct State_ {
     unsigned char s[N];
+    unsigned char a;
     unsigned char i;
     unsigned char j;
     unsigned char k;
-    unsigned char z;
-    unsigned char a;
     unsigned char w;
+    unsigned char z;
 } State;
 
 #define LOW(B)  ((B) & 0xf)
@@ -50,12 +50,12 @@ initialize_state(State *state)
     for (v = 0; v < N; v++) {
         state->s[v] = (unsigned char) v;
     }
+    state->a = 0;
     state->i = 0;
     state->j = 0;
     state->k = 0;
-    state->z = 0;
-    state->a = 0;
     state->w = 1;
+    state->z = 0;
 }
 
 static void
@@ -89,10 +89,9 @@ static void
 crush(State *state)
 {
     unsigned char v;
-    unsigned char t;
-    unsigned char y;
     unsigned char x1;
     unsigned char x2;
+    unsigned char y;
 
     for (v = 0; v < N / 2; v++) {
         y = (N - 1) - v;
