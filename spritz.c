@@ -201,9 +201,6 @@ key_setup(State *state, const unsigned char *key, size_t keylen)
 {
     initialize_state(state);
     absorb(state, key, keylen);
-    if (state->a > 0) {
-        shuffle(state);
-    }
 }
 
 int
