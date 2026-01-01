@@ -2,6 +2,8 @@
 #ifndef __SPRITZ_H__
 #define __SPRITZ_H__
 
+#include <stddef.h>
+
 int spritz_hash(unsigned char *out, size_t outlen,
                 const unsigned char *msg, size_t msglen);
 
